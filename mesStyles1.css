@@ -1,0 +1,50 @@
+﻿body {
+  font-family: Verdana;
+  width: 1200px;
+  margin: auto;
+}
+
+header {
+  height: 250px;
+  background-image: url("logo.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+nav {
+  background-color: #f3e3d4;
+  width: 300px;
+  height: 400px;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+section {
+  background-color: #eafafa;
+  width: 900px;
+  height: 400px;
+  float: left;
+  text-align: center;
+}
+iframe {
+  width: 700px;
+  height: 500px;
+  border: none;
+}
+
+a{
+    text-decoration: none;
+    background-color: white;
+    width: 250px;
+    height: 30px;
+    text-align: center;
+
+}
+
+a:hover{
+    background-color: darkseagreen;
+    color: white;
+    transition: all 1s;
+}

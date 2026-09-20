@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+	<script src="controles.js"></script>
+</head>
+
+<body>
+	<form action="mesures.php" method="post" onSubmit="return test1()">
+		<fieldset>
+			<legend>ajout des mesures</legend>
+		<label for="">station</label>
+			<select name="st" id="st">
+				<option value="">choisir une saison</option>
+				<option value="60715">carthage</option>
+				<option value="60731">enfidha-airoport</option>
+				<option value="60715">elborma</option>
+			
+			
+			
+			
+			
+			</select>
+				<label for="">saison</label>
+			<select name="sa" id="s">
+				<option value="">choisir une sasiom</option>
+				<option value="hiver">hiver</option>
+				<option value="printemps">printemps</option>
+				<option value="ete">ete</option>
+				<option value="autumn">autumn</option>
+			
+			
+			
+			
+			
+			</select>
+			<label for="">anee</label>
+			<input type="radio" name="a" id="c">2018
+			<input type="radio" name="a" id="c1">2019
+			<label for="">temperature</label>
+			<input type="text">
+			<label for="">plui</label>
+			<input type="text" name="p" id="p"><br>
+			<input type="reset" value="annuler">
+			<input type="submit" value="ajouter" onClick="test1()">
+			
+		
+		
+		</fieldset>
+	
+	
+	
+	</form>
+</body>
+</html>
