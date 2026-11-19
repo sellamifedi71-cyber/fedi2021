@@ -1,36 +1,8 @@
 <?php
-$cnx=mysqli_connect("localhost","root","","bac2021");
-$st=$_POST["st"];
-if(isset($_POST["t"]))
-{
-	$d="t";}
-if(isset($_POST["t1"]))
-{$d="p";}
-if(isset($_POST["t"])&&isset($_POST["t1"]))
-{
-	$d="t et p";
-}
-
-$req="select * from station where '$st'=idstation";
-$res=mysqli_query($cnx,$req);
-if(mysqli_num_rows($res)=0)
-{
-	echo("non enregistree");
-}
-$req1="select * from mesure m,station s where m.idstation=s.idstation and anee=year(now()) ";
-$res=mysqli_query($cnx,$req1);
-if(mysqli_num_rows($res)=0)
-{
-	echo("aucune mesure ");
-}
-else{
-	$req3="select * from mesure where '$st'=idstation and anee=year(now())";
-	$res3=mysqli_query($cnx,$req3);
-echo("<table><th>moyenne temperature")
-if($d=="t")
-{
-	
-}
-
-}
-
+declare(strict_types=1); require __DIR__.'/config.php';
+$station=trim((string)($_GET['station']??'')); $year=trim((string)($_GET['year']??''));
+if (($station!==''&&!preg_match('/^[0-9]+$/',$station)) || ($year!==''&&(!preg_match('/^[0-9]{4}$/',$year)||(int)$year<1900))) { http_response_code(422); exit('Filtres invalides.'); }
+$sql='SELECT s.Nom,s.Ville,m.annee,AVG(m.temperature) AS temp_moy,AVG(m.pluie) AS pluie_moy,COUNT(*) AS nb FROM mesure m INNER JOIN station s ON s.Idstation=m.idstation WHERE (? = \'\' OR m.idstation=?) AND (? = \'\' OR m.annee=?) GROUP BY s.Idstation,s.Nom,s.Ville,m.annee ORDER BY m.annee DESC,s.Nom';
+$stmt=$db->prepare($sql); $stmt->bind_param('ssss',$station,$station,$year,$year); $stmt->execute(); $rows=$stmt->get_result();
+$stations=$db->query('SELECT Idstation,Nom,Ville FROM station ORDER BY Ville,Nom');
+?><!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moyennes — Fedi Climat</title><link rel="stylesheet" href="fedi.css"></head><body><header><a class="brand" href="index.php"><span>F</span> Fedi Climat</a><nav><a href="index.php">Accueil</a><a href="mesure.php">Ajouter</a><a href="consultation.php">Historique</a></nav></header><main class="content wide"><p class="eyebrow">Analyse climatique</p><h1>Moyennes annuelles</h1><form method="get" class="filters"><label for="station">Station</label><select id="station" name="station"><option value="">Toutes</option><?php while($s=$stations->fetch_assoc()):?><option value="<?=(int)$s['Idstation']?>" <?=$station===(string)$s['Idstation']?'selected':''?>><?=h($s['Nom'].' — '.$s['Ville'])?></option><?php endwhile;?></select><label for="year">Année</label><input id="year" name="year" type="number" min="1900" max="<?= (int)date('Y') ?>" value="<?=h($year)?>"><button class="button">Calculer</button></form><div class="table-wrap"><table><thead><tr><th>Station</th><th>Ville</th><th>Année</th><th>Température moyenne</th><th>Pluie moyenne</th><th>Relevés</th></tr></thead><tbody><?php if($rows->num_rows===0):?><tr><td colspan="6">Aucune donnée pour ce filtre.</td></tr><?php else:while($r=$rows->fetch_assoc()):?><tr><td><?=h($r['Nom'])?></td><td><?=h($r['Ville'])?></td><td><?=(int)$r['annee']?></td><td><?=number_format((float)$r['temp_moy'],2,',',' ')?> °C</td><td><?=number_format((float)$r['pluie_moy'],2,',',' ')?> mm</td><td><?=(int)$r['nb']?></td></tr><?php endwhile;endif;?></tbody></table></div></main><footer>Fedi Climat</footer></body></html>
